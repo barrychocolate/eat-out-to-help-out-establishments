@@ -24,8 +24,9 @@ This aim of this project is to produce a map displaying the establishments that 
 
 https://www.tax.service.gov.uk/eat-out-to-help-out/find-a-restaurant/?_ga=2.159416701.1723075929.1596201136-857574019.1589147008
 
-```{r load_data}
-#Load the NSPL dataset which has cordinates for postcodes
+
+```{r subset_nspl}
+#Load the NSPL dataset which has coordinates for postcodes
 #This can be downloaded freely from 
 #https://geoportal.statistics.gov.uk/datasets/national-statistics-postcode-lookup-may-2020
 nspl <-read.csv('data/NSPL_MAY_2020_UK.csv')
@@ -36,6 +37,14 @@ nspl <- subset(nspl, select = c(pcds,lat, long))
 #Rename pcds colum to make join to EO2HO easier
 names(nspl) <- c("Postcode", "lat", "lng")
 
+#write to its own csv in case needed again
+write.csv(nspl, 'data/nspl_short.csv', row.names = FALSE)
+```
+
+```{r load_data}
+#load nspl data
+nspl <- read.csv('data/nspl_short.csv')
+
 #Load the Eat Out To Help Out (EO2HO) data
 eo2ho <- read.csv('data/participating-establishments/restaurants.csv')
 
@@ -44,21 +53,24 @@ eo2ho$Postcode<- toupper(str_replace_all(eo2ho$Postcode, " ", ""))
 
 eo2ho$Postcode<-paste(substr(eo2ho$Postcode, 1,nchar(eo2ho$Postcode)-3), substr(eo2ho$Postcode,nchar(eo2ho$Postcode)-2,nchar(eo2ho$Postcode)), sep = " ", collapse = NULL)
 
-#TODO Remove after testing
-#eo2ho<- eo2ho %>% filter(str_detect(Postcode,"^NE"))
-
 #Join EO2HO data to NSPL to get a cordinate for each establishment
-eo2ho_cordinates <- merge(eo2ho, nspl, by="Postcode")
+eo2ho_coordinates <- merge(eo2ho, nspl, by="Postcode")
 
 #Add address column for popu
-eo2ho_cordinates$Popup <- paste(eo2ho_cordinates$Name, eo2ho_cordinates$Line.1, eo2ho_cordinates$Line.2, eo2ho_cordinates$Town, eo2ho_cordinates$County, eo2ho_cordinates$Postcode, sep=", ")
+eo2ho_coordinates$Popup <- paste(eo2ho_coordinates$Name, eo2ho_coordinates$Line.1, eo2ho_coordinates$Line.2, eo2ho_coordinates$Town, eo2ho_coordinates$County, eo2ho_coordinates$Postcode, sep=", ")
+
+#TODO Remove after testing
+eo2ho_coordinates_NE<- eo2ho_coordinates %>% filter(str_detect(Postcode,"^NE"))
 
 #Drop uneeded columns
-eo2ho_cordinates <- subset(eo2ho_cordinates, select = c(lat, lng, Popup))
+eo2ho_coordinates <- subset(eo2ho_coordinates, select = c(lat, lng, Popup))
+eo2ho_coordinates_NE <- subset(eo2ho_coordinates_NE, select = c(lat, lng, Popup))
 
 #remove the original datasets to free up memory
 rm(nspl, eo2ho)
 
 #Write the data to a new csv
-write.csv(eo2ho_cordinates,'data/eo2ho_cordinates.csv')
+write.csv(eo2ho_coordinates,'data/eo2ho_coordinates.csv', row.names = FALSE)
+write.csv(eo2ho_coordinates_NE,'data/eo2ho_coordinates_NE.csv', row.names = FALSE)
+
 ```
