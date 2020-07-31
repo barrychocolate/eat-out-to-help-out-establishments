@@ -1,0 +1,31 @@
+---
+title: "Eat Out To Help Out Map"
+author: "Barry Bullas"
+date: "31/07/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE, warning =FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#Check if the required packages are installed, if not install them
+list_of_packages <- c("leaflet")
+new_packages <- list_of_packages[!(list_of_packages %in% installed.packages()[,"Package"])]
+if(length(new_packages)) install.packages(new_packages)
+
+#Load required packages
+lapply(list_of_packages, library, character.only = TRUE)
+```
+
+## Map
+
+```{r map, echo=FALSE}
+eo2ho_cordinates<-read.csv('data/eo2ho_cordinates.csv')
+
+m <- leaflet(eo2ho_cordinates) %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=~lng, lat=~lat, popup=~Popup)
+m  # Print the map
+```
+
+
