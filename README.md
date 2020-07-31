@@ -1,5 +1,10 @@
 
 # Eat Out to Help Out Scheme participating establishments
+
+This project uses the HMRC Eat Out To Help Out Registration data to produce a map showing participating restaurants.
+
+You can view the [restaurant Map](https://arcg.is/15aOjm0) on the ESRI Arc GIS Online site.
+
 Participating establishments can use the Eat Out to Help Out Scheme to offer a discount to diners and encourage them to eat at their venues.
 The data was collected when establishments registered for the scheme. It includes:
 - Establishment name
