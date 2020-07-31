@@ -369,22 +369,42 @@ summary {
 </div>
 
 
-<div id="eat-out-to-help-out" class="section level1">
-<h1>Eat Out To Help Out</h1>
-<div id="data-prep" class="section level2">
-<h2>Data Prep</h2>
-<p>This aim of this project is to produce a map displaying the establishments that are taking part in HMRC’s Eat Out To Help Out (EO2HO) scheme. The establishment data is provided by HMRC. The project also uses the National Statistics Postcode Lookup (NSPL) provide free by the Office of National Statistics (ONS). The NSPL allows us to identify a lattitude and Longitude for the postcodes in the EA2HO data.</p>
-<p><a href="https://www.tax.service.gov.uk/eat-out-to-help-out/find-a-restaurant/?_ga=2.159416701.1723075929.1596201136-857574019.1589147008" class="uri">https://www.tax.service.gov.uk/eat-out-to-help-out/find-a-restaurant/?_ga=2.159416701.1723075929.1596201136-857574019.1589147008</a></p>
-<pre class="r"><code>#Load the NSPL dataset which has cordinates for postcodes
-#This can be downloaded freely from 
-#https://geoportal.statistics.gov.uk/datasets/national-statistics-postcode-lookup-may-2020
+<div id="retaurant-map" class="section level2">
+<h2>Retaurant Map</h2>
+<p>I chose ESRI ArcGIS to produce the map, using a free ARC GIS Online account and hosting the data on GitHub. You can view the finished <a href="https://arcg.is/0vKven">Eat Out To Help Out Restaurant Map</a> on ESRI’s ARC GIS Online website. This project also contains a map in leaflet which covers any restaurant with an NE postcode.</p>
+<blockquote>
+<p>This project uses the data provided by HMRC but this project and the resulting map is a personal project and not an offical HMRC product.</p>
+</blockquote>
+</div>
+<div id="aim-of-the-project" class="section level2">
+<h2>Aim of the Project</h2>
+<p>This aim of this project is to produce a map displaying the establishments that are taking part in HMRC’s Eat Out To Help Out (EO2HO) scheme.<br />
+HMRC provides a <a href="https://www.tax.service.gov.uk/eat-out-to-help-out/find-a-restaurant/?_ga=2.159416701.1723075929.1596201136-857574019.1589147008">Restaurant Finder</a>, however it only returns a list of restaurants within a set distance. I wanted to produce a map that would allow users to explore restauraunts in their own area.</p>
+<p>The schme operates From 3 to 31 August. Customers get a 50% discount, up to a maximum of £10 per person, when you eat in at restaurants that are registered with the Eat Out to Help Out Scheme.</p>
+<p>The <a href="https://www.gov.uk/government/publications/eat-out-to-help-out-scheme-registration-data-for-software-developers">EO2HO Registration data is provided by HMRC</a> and can be found on thee <a href="https://github.com/hmrc/eat-out-to-help-out-establishments">HMRC Github Account</a>. The data I used was downloaded on 31st July 2020.</p>
+<p>The HMRC data only provides the address information. To get the coordinates need for the map I use the National Statistics Postcode Lookup (NSPL) provide free by the Office of National Statistics (ONS). The NSPL allows you to identify a lattitude and Longitude for the postcodes in the EA2HO data.</p>
+<p>More details on the scheme can be found on the <a href="https://www.gov.uk/guidance/get-a-discount-with-the-eat-out-to-help-out-scheme">Gov.UK site</a>.</p>
+</div>
+<div id="national-statistics-postcode-lookup-nspl" class="section level2">
+<h2>National Statistics Postcode Lookup (NSPL)</h2>
+<p>The NSPL is a great tool for UK statistical geographies. It can be downloaded freely from the <a href="https://geoportal.statistics.gov.uk/datasets/national-statistics-postcode-lookup-may-2020">ONS Open Geography Portal</a>. I used the may 2020 version which was the latest available. I downloaded it to the data folder. The file is too big to upload to Github so you will need to download it yourself.</p>
+<pre class="r"><code>#Load the NSPL dataset which has coordinates for postcodes
 nspl &lt;-read.csv(&#39;data/NSPL_MAY_2020_UK.csv&#39;)
 
-#Keep onlt the columns we need
+#Keep only the columns we need
 nspl &lt;- subset(nspl, select = c(pcds,lat, long))
 
 #Rename pcds colum to make join to EO2HO easier
 names(nspl) &lt;- c(&quot;Postcode&quot;, &quot;lat&quot;, &quot;lng&quot;)
+
+#write to its own csv in case needed again
+write.csv(nspl, &#39;data/nspl_short.csv&#39;, row.names = FALSE)</code></pre>
+</div>
+<div id="restaurant-data" class="section level2">
+<h2>Restaurant Data</h2>
+<p>In this section I format the postcodes in the restaurant data to ensure they join with the NSPL postcodes. I then combine the address columns into a single column which can be used in a popup on the map.</p>
+<pre class="r"><code>#load nspl data
+nspl &lt;- read.csv(&#39;data/nspl_short.csv&#39;)
 
 #Load the Eat Out To Help Out (EO2HO) data
 eo2ho &lt;- read.csv(&#39;data/participating-establishments/restaurants.csv&#39;)
@@ -394,24 +414,25 @@ eo2ho$Postcode&lt;- toupper(str_replace_all(eo2ho$Postcode, &quot; &quot;, &quot
 
 eo2ho$Postcode&lt;-paste(substr(eo2ho$Postcode, 1,nchar(eo2ho$Postcode)-3), substr(eo2ho$Postcode,nchar(eo2ho$Postcode)-2,nchar(eo2ho$Postcode)), sep = &quot; &quot;, collapse = NULL)
 
-#TODO Remove after testing
-#eo2ho&lt;- eo2ho %&gt;% filter(str_detect(Postcode,&quot;^NE&quot;))
-
 #Join EO2HO data to NSPL to get a cordinate for each establishment
-eo2ho_cordinates &lt;- merge(eo2ho, nspl, by=&quot;Postcode&quot;)
+eo2ho_coordinates &lt;- merge(eo2ho, nspl, by=&quot;Postcode&quot;)
 
 #Add address column for popu
-eo2ho_cordinates$Popup &lt;- paste(eo2ho_cordinates$Name, eo2ho_cordinates$Line.1, eo2ho_cordinates$Line.2, eo2ho_cordinates$Town, eo2ho_cordinates$County, eo2ho_cordinates$Postcode, sep=&quot;, &quot;)
+eo2ho_coordinates$Address &lt;- paste(eo2ho_coordinates$Name, eo2ho_coordinates$Line.1, eo2ho_coordinates$Line.2, eo2ho_coordinates$Town, eo2ho_coordinates$County, eo2ho_coordinates$Postcode, sep=&quot;, &quot;)
+
+#A smaller subset that can be used for testing the leaflet map
+eo2ho_coordinates_NE&lt;- eo2ho_coordinates %&gt;% filter(str_detect(Postcode,&quot;^NE&quot;))
 
 #Drop uneeded columns
-eo2ho_cordinates &lt;- subset(eo2ho_cordinates, select = c(lat, lng, Popup))
+eo2ho_coordinates &lt;- subset(eo2ho_coordinates, select = c(lat, lng, Address))
+eo2ho_coordinates_NE &lt;- subset(eo2ho_coordinates_NE, select = c(lat, lng, Address))
 
 #remove the original datasets to free up memory
 rm(nspl, eo2ho)
 
 #Write the data to a new csv
-write.csv(eo2ho_cordinates,&#39;data/eo2ho_cordinates.csv&#39;)</code></pre>
-</div>
+write.csv(eo2ho_coordinates,&#39;data/eo2ho_coordinates.csv&#39;, row.names = FALSE)
+write.csv(eo2ho_coordinates_NE,&#39;data/eo2ho_coordinates_NE.csv&#39;, row.names = FALSE)</code></pre>
 </div>
 
 

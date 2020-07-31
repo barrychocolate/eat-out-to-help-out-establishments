@@ -19,12 +19,16 @@ lapply(list_of_packages, library, character.only = TRUE)
 
 ## Map
 
+This map shows a subset of the Eat Out To Help Out (EO2HO) restaurants who have an NE postcode.  The dataset was too big to display without hosting on Shiny or another suitable location.  However this shows what can be achieved quickly and easily using Leaflet.  There is loads of great Leaflet examples on the [Leaflet Github Pages](https://rstudio.github.io/leaflet/).
+
+I chose ESRI ArcGIS to produce the map for the whole dataset.  You can view the finished [Eat Out To Help Out Restaurant Map](https://arcg.is/0vKven) on ESRI's ARC GIS Online website.
+
 ```{r map, echo=FALSE}
 eo2ho_coordinates_NE<-read.csv('data/eo2ho_coordinates_NE.csv')
 
 m <- leaflet(eo2ho_coordinates_NE) %>%
   addTiles() %>%  # Add default OpenStreetMap map tiles
-  addMarkers(lng=~lng, lat=~lat, popup=~Popup)
+  addMarkers(lng=~lng, lat=~lat, popup=~Address)
 m  # Print the map
 ```
 
