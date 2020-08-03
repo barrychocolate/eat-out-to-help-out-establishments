@@ -93,9 +93,13 @@ eo2ho_coordinates$Address <- paste(eo2ho_coordinates$Name, eo2ho_coordinates$Lin
 #A smaller subset that can be used for testing the leaflet map
 eo2ho_coordinates_NE<- eo2ho_coordinates %>% filter(str_detect(Postcode,"^NE"))
 
+#ice cream
+eo2ho_coordinates_ICE<- eo2ho_coordinates %>% filter(str_detect(Name,"ice"))
+
 #Drop uneeded columns
 eo2ho_coordinates <- subset(eo2ho_coordinates, select = c(lat, lng, Address))
 eo2ho_coordinates_NE <- subset(eo2ho_coordinates_NE, select = c(lat, lng, Address))
+eo2ho_coordinates_ICE <- subset(eo2ho_coordinates_ICE, select = c(lat, lng, Address))
 
 #remove the original datasets to free up memory
 rm(onspd, eo2ho)
@@ -104,4 +108,5 @@ rm(onspd, eo2ho)
 write.csv(eo2ho_coordinates,'data/eo2ho_coordinates.csv', row.names = FALSE)
 write.csv(eo2ho_coordinates_NE,'data/eo2ho_coordinates_NE.csv', row.names = FALSE)
 write.csv(eo2ho_coordinates_NE,'data/no_coordinates.csv', row.names = FALSE)
+write.csv(eo2ho_coordinates_ICE,'data/no_coordinates_ICE.csv', row.names = FALSE)
 ```
