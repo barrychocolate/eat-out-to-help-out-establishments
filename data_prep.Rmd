@@ -65,7 +65,10 @@ In this section I format the postcodes in the restaurant data to ensure they joi
 onspd <- read.csv('data/onspd_short.csv')
 
 #Load the Eat Out To Help Out (EO2HO) data
-eo2ho <- read.csv('data/participating-establishments/restaurants.csv')
+#eo2ho <- read.csv('data/participating-establishments/restaurants.csv')
+
+#Load directly from github
+eo2ho <- read.csv('https://raw.githubusercontent.com/hmrc/eat-out-to-help-out-establishments/master/data/participating-establishments/restaurants.csv')
 
 #Format the postcodes to match the onspd data
 eo2ho$Postcode<- toupper(str_replace_all(eo2ho$Postcode, " ", ""))
