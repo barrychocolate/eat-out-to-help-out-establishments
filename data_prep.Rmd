@@ -104,5 +104,5 @@ rm(onspd, eo2ho)
 #Write the data to a new csv
 write.csv(eo2ho_coordinates,'data/eo2ho_coordinates.csv', row.names = FALSE)
 write.csv(eo2ho_coordinates_NE,'data/eo2ho_coordinates_NE.csv', row.names = FALSE)
-write.csv(eo2ho_coordinates_NE,'data/no_coordinates.csv', row.names = FALSE)
+write.csv(no_coordinates,'data/no_coordinates.csv', row.names = FALSE)
 ```
