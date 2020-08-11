@@ -3,6 +3,7 @@
 "AB56 5DJ","Bijou by the Sea","Bijou by the Sea","Great Eastern Road","Portessie","Moray",NA,NA
 "B50 6AB","MISS KOREA","155 Bromsgrove Street","","Birmingham","",NA,NA
 "BB12 1BB","GEMMAS CAFE","BURNLEY MARKET HALL","CURZON STREET","BURNLEY","LANCASHIRE",NA,NA
+"BD17 4AW","Oakwood Hall","Oakwood Hall Hotel","Lady Lane","Bingley","West Yorkshire",NA,NA
 "BH19 2FH","The Pier Head","The Pier Head","Lower High Street","Swanage","Dorset",NA,NA
 "BH23 6JJ","Richmond Hill Lunch club","St Peters Church","St Stephens Road","Bournemouth","Dorset",NA,NA
 "BH24 9HU","The White Hart Inn","171 Southampton Road","","Ringwood","Hampshire",NA,NA
@@ -13,7 +14,6 @@
 "BT47 5AJ","SUBWAY","Unit 7A","Crescent Link Retail Park ","Londonderry","Londonderry ",NA,NA
 "BT51 1LD","Ground Espresso Bars Ltd","25 KINGSGATE STREET","","COLERAINE","",NA,NA
 "BT56 8BC","Ground Espresso Bars Ltd","52 MAIN STREET ","","PORTRUSH","",NA,NA
-"C06 1LS","PLANTCROFT LTD T/A WAY TO THE RAJ","WAY TO THE RAJ","90 COGGESHALL ROAD, MARKS TEY","COLCHESTER","",NA,NA
 "C08 5AT","Thatchers Arms","Thatchers Arms Public House","Hall Road","Mount Bures","Essex",NA,NA
 "CH2 8AR","Concept catering c/o Chester golf club","Chester golf club ","Curzon park ","Chester","Cheshire",NA,NA
 "CM3 2TF","THE WHEATSHEAF","THE WHEATSHEAF","MALDON ROAD","HATFIELD PEVEREL","",NA,NA
@@ -75,6 +75,7 @@
 "SS6 4LR","The Inn At Belfairs","The Inn At Belfairs","Eastwood Road North","Leigh On Sea","Essex",NA,NA
 "SW1 1EZ","Vagabond Wines Battersea","Unit 12 Circus Village West","Circus Road West, Phase 1","London","",NA,NA
 "SW1 6DN","45 Jermyn St","45 Jermyn St. St. James's, ","","London","",NA,NA
+"SW1W 5BW","California Steak House","15","Buckingham Place Road","London","",NA,NA
 "SW2 8PZ","McDonalds Streatham Place","2-22 Streatham Place","","London","",NA,NA
 "SY13 9JT","ma bakers","ma bakers cafe","heath road","whitchurch","shropshire",NA,NA
 "SY2 1PL","Cwpan Pinc","Cwpan Pinc","The Old Post Office, Llangadfan","Welshpool","Powys",NA,NA
