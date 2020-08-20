@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 #Check if the required packages are installed, if not install them
-list_of_packages <- c("dplyr", "stringr")
+list_of_packages <- c("dplyr", "stringr", "tidyverse", "sf", "DT")
 new_packages <- list_of_packages[!(list_of_packages %in% installed.packages()[,"Package"])]
 if(length(new_packages)) install.packages(new_packages)
 
@@ -56,6 +56,56 @@ names(onspd) <- c("Postcode", "lat", "lng")
 write.csv(onspd, 'data/onspd_short.csv', row.names = FALSE)
 ```
 
+## Ordnance Survey - Codepoint
+Because a number of postcodes provide can't be matched to the NSPL, i tried using the  [Ordnace Survey Codepoint dataset](https://osdatahub.os.uk/downloads/open) to see if it matched any better.  Codepoint Open provides coordinates for all GB postcodes (Northern Ireland is not included which is a significant limitation) and is available to download for free.  OS provides a range of documents to [get you started](https://www.ordnancesurvey.co.uk/business-government/tools-support/code-point-open-support).
+
+Codepoint provides a csv file for each Area code (the first one or two characters).  I combined these quickly and simply using the command prompt.  To do this open a command prompt (click the start menu and type command).  Change the current directory using the CD command, to the folder containing all the csv files.
+
+> CD c:\folder_with_csvs\
+
+Then use the copy command to merge all the csv files into one csv called codepoint.
+
+> copy *.csv codepoint.csv
+
+
+
+```{r}
+codepoint <- read.csv('data/codepoint_20200820.csv', header=FALSE, stringsAsFactors = FALSE)
+
+#Add column names
+names(codepoint) <- c('Postcode','Positional_quality_indicator','Eastings', 'Northings', 'Country_code', 'NHS_regional_HA_code', 'NHS_HA_code', 'Admin_county_code', 'Admin_district_code', 'Admin_ward_code')
+
+#Drop uneeded columns
+codepoint <- codepoint[c('Postcode', 'Eastings', 'Northings')]
+
+#Convert Northing/Easting to Latitude and Longitude
+codepoint_coordinates <- codepoint %>%
+  st_as_sf(coords = c("Eastings", "Northings"), crs = 27700) %>%
+  st_transform(4326) %>%
+  st_coordinates() %>%
+  as_tibble()
+
+
+#bind coordinates to original data
+codepoint <- cbind(codepoint, codepoint_coordinates)
+rm(codepoint_coordinates)
+
+#Rename columns
+codepoint <- rename(codepoint, c("lng"="X", "lat"="Y"))
+
+#Format the postcodes to match the other datasets
+codepoint$Postcode<- toupper(str_replace_all(codepoint$Postcode, " ", ""))
+
+codepoint$Postcode<-paste(substr(codepoint$Postcode, 1,nchar(codepoint$Postcode)-3), substr(codepoint$Postcode,nchar(codepoint$Postcode)-2,nchar(codepoint$Postcode)), sep = " ", collapse = NULL)
+
+#Drop uneeded columns
+codepoint <- codepoint[c('Postcode', 'lng', 'lat')]
+
+write.csv(codepoint, 'data/codepoint_subset.csv')
+
+```
+
+
 ## Restaurant Data
 
 In this section I format the postcodes in the restaurant data to ensure they join with the onspd postcodes.  I then combine the address columns into a single column which can be used in a popup on the map.  
@@ -64,7 +114,10 @@ In this section I format the postcodes in the restaurant data to ensure they joi
 #load onspd data
 onspd <- read.csv('data/onspd_short.csv')
 
-#Load the Eat Out To Help Out (EO2HO) data
+#load codepoint
+codepoint <- read.csv('data/codepoint_subset.csv')
+
+#Load the Eat Out To Help Out (EO2HO) data downloaded from GitHub
 #eo2ho <- read.csv('data/participating-establishments/restaurants.csv')
 
 #Load directly from github
@@ -78,10 +131,14 @@ eo2ho$Postcode<-paste(substr(eo2ho$Postcode, 1,nchar(eo2ho$Postcode)-3), substr(
 #Join EO2HO data to onspd to get a cordinate for each establishment
 eo2ho_coordinates <- merge(eo2ho, onspd, by="Postcode", all = TRUE)
 
+#Join EO2HO data to Codepoint to get a cordinate for each establishment
+#eo2ho_coordinates <- merge(eo2ho, codepoint, by="Postcode", all = TRUE)
+
+
 # Keep only restaurants 
 eo2ho_coordinates <- subset(eo2ho_coordinates, !is.na(eo2ho_coordinates$Name))
 
-#Subset any that didn't match to the onspd for investigation
+#Subset any that didn't match to the lookup, for investigation
 no_coordinates<- subset(eo2ho_coordinates, is.na(eo2ho_coordinates$lat))
 
 #Remove those that we couldn't get coordinates for, from the final dataset
@@ -99,10 +156,36 @@ eo2ho_coordinates <- subset(eo2ho_coordinates, select = c(lat, lng, Address))
 eo2ho_coordinates_NE <- subset(eo2ho_coordinates_NE, select = c(lat, lng, Address))
 
 #remove the original datasets to free up memory
-rm(onspd, eo2ho)
+rm(onspd, eo2ho, codepoint)
 
 #Write the data to a new csv
 write.csv(eo2ho_coordinates,'data/eo2ho_coordinates.csv', row.names = FALSE)
 write.csv(eo2ho_coordinates_NE,'data/eo2ho_coordinates_NE.csv', row.names = FALSE)
 write.csv(no_coordinates,'data/no_coordinates.csv', row.names = FALSE)
 ```
+
+### Investigate issues
+
+Comparing the match rates for the different postcode lookups, I have chosen to stick with the ONSPD.  Not having Northern Irish postcodes is a significant limitation.  In addition, there are still more unmatched postcodes when the Northern Irish postcodes are excluded.
+
+```{r}
+#extract the area from the postcode
+no_coordinates$Area <- str_extract(no_coordinates$Postcode, "^[:alpha:]{1,2}")
+
+
+area_breakdown <- no_coordinates %>%
+  group_by(Area) %>%
+  tally(sort = TRUE, name="unmatched_count")
+
+
+datatable(area_breakdown,
+          caption = 'Unmatched postcodes by area',
+          class = 'cell-border stripe',
+          rownames = FALSE,
+          options = list(searching = FALSE)
+)
+
+#Codepoint does not provide data for Northern Ireland so we have 1,878 unmatched for BT and 423 for elsewhere
+#ONSPD has a better match rate with 98 unmatched
+```
+

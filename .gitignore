@@ -23,5 +23,6 @@ yarn-debug.log
 yarn-error.log
 /data/ONSPD_FEB_2020_UK.csv
 /data/onspd_short.csv
-    
+/data/codepoint_20200820.csv
+/data/codepoint_subset.csv
 .Rproj.user
