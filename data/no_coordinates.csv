@@ -31,8 +31,8 @@
 "EH53 0GH","Calderwood Cafe","1 Calderwood Square","Calderwood Road","East Calder","",NA,NA
 "G1 3RL","Di Maggio's Restaurant (Theatreland)","163","West Nile Street","Glasgow","",NA,NA
 "G1 8LW","steak and cherry","516 sauchie hall street","","glasgow","",NA,NA
-"G3 9TQ","Bukhara Restaurant Glasgow","923 Sauchiehall Street","","Glasgow","",NA,NA
 "G3 9TQ","The Lorne Hotel","923 Sauchiehall Street","","Glasgow","",NA,NA
+"G3 9TQ","Bukhara Restaurant Glasgow","923 Sauchiehall Street","","Glasgow","",NA,NA
 "G33 9DT","McDonald's","800 Westerhouse Road","","Glasgow","",NA,NA
 "GH1 5HF","TJ Hughes Glasgow","TJ Hughes 127-135","Trongate","Glasgow","",NA,NA
 "HS9 5TD","Eoligarry School Canteen","Eoligarry School Canteen","","Isle of Barra","Western Isles",NA,NA
@@ -46,6 +46,7 @@
 "L2 9TF","THE DREAM BAR LIMITED TRADE CARLISI ","92 94 dale street","","liverpool","",NA,NA
 "L32 7TJ","Fryer tucks 2","3 a newest road ","","Liverpool","",NA,NA
 "L39 1BP","The Yew Tree","The Yew Tree","Grimshaw Lane ","Ormksirk","Lancashire",NA,NA
+"LD21 1AE","The Otley Burger Company ","The Otley Taps ","66 Boroughgate ","Otley ","",NA,NA
 "LS15 5DT","H&M Ice Ltd","  43-45 Station Rd  Leeds ","Cross Gates","Leeds","",NA,NA
 "LS17 9TA","White Swan Hotel","White Swan Hotel","High Street","Leeds","W Yorkshire",NA,NA
 "M01 4BT","Chopped Manchester","Unit E1A","City Tower , New York Street","Manchester ","",NA,NA
@@ -86,8 +87,8 @@
 "TA6 0EB","Sedgemoor Inn ","Sedgemoor Inn ","19,Main Road ","Westonzoyland ","Somerset ",NA,NA
 "TF4 9EJ","Hungersheath Tea Room","Hungersheath Tea Room","","Ashley","MARKET DRAYTON",NA,NA
 "TR26 1GF","Yallah Coffee","Yallah Coffee","Wharf Road","St Ives","Cornwall",NA,NA
-"TS1 6EA","Milligans Middlesbrough Limited","Unit 2","Newport Road","Middlesbrough","",NA,NA
 "TS1 6EA","Milligans Middlesbrough","Unit 2","Newport Road","Middlesbrough","",NA,NA
+"TS1 6EA","Milligans Middlesbrough Limited","Unit 2","Newport Road","Middlesbrough","",NA,NA
 "TS14 6RX","Subway","The Triangle, Woodhouse Services ","Middlesbrough Road","Guisborough","",NA,NA
 "TS25 7SE","LilyAnne's Coffee Bar","LilyAnne's Coffee Bar","5 Victoria Road","Hartlepool","United Kingdom",NA,NA
 "TW20 0YO","Langton's","Langton's","Coopers Hill Lane","Englefield Green","Surrey",NA,NA
